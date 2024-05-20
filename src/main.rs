@@ -1,5 +1,7 @@
 use clap::{Arg, Command};
-
+mod commands {
+    pub mod ls;
+}
 fn main() {
     let matches = Command::new("assetm")
         .version("1.0")
@@ -29,4 +31,8 @@ fn main() {
                 .arg(Arg::new("file_name").required(true).index(2)),
         )
         .get_matches();
+    // if command is ls, use handle_ls from ls.rs
+    if let Some(_) = matches.subcommand_matches("ls") {
+        commands::ls::handle_ls();
+    }
 }
