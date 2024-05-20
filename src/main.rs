@@ -1,6 +1,10 @@
 use clap::{Arg, Command};
 mod commands {
     pub mod ls;
+    pub mod add;
+    pub mod remove;
+    pub mod import;
+    pub mod default;
 }
 fn main() {
     let matches = Command::new("assetm")
@@ -35,4 +39,17 @@ fn main() {
     if let Some(_) = matches.subcommand_matches("ls") {
         commands::ls::handle_ls();
     }
+    if let Some(matches) = matches.subcommand_matches("add") {
+        commands::add::handle_add();
+    }
+    if let Some(matches) = matches.subcommand_matches("remove") {
+        commands::remove::handle_remove();
+    }
+    if let Some(matches) = matches.subcommand_matches("default") {
+        commands::default::handle_default();
+    }
+    if let Some(matches) = matches.subcommand_matches("import") {
+        commands::import::handle_import();
+    }
+
 }
