@@ -1,11 +1,13 @@
 use clap::{Arg, Command};
 mod commands {
-    pub mod ls;
     pub mod add;
-    pub mod remove;
-    pub mod import;
     pub mod default;
+    pub mod import;
+    pub mod ls;
+    pub mod path;
+    pub mod remove;
 }
+mod project_state;
 fn main() {
     let matches = Command::new("assetm")
         .version("1.0")
@@ -28,6 +30,7 @@ fn main() {
                 .about("Sets the default path from where to pull the asset")
                 .arg(Arg::new("path").required(true).index(1)),
         )
+        .subcommand(Command::new("path").about("Shows the default path for assets"))
         .subcommand(
             Command::new("import")
                 .about("Imports a file to a project")
@@ -35,21 +38,26 @@ fn main() {
                 .arg(Arg::new("file_name").required(true).index(2)),
         )
         .get_matches();
-    // if command is ls, use handle_ls from ls.rs
+
     if let Some(_) = matches.subcommand_matches("ls") {
         commands::ls::handle_ls();
     }
-    if let Some(matches) = matches.subcommand_matches("add") {
-        commands::add::handle_add();
+    if let Some(add_match) = matches.subcommand_matches("add") {
+        // get values of project_name and path using get_one and pass them to function add
+        let project_name = add_match.get_one::<String>("project_name").unwrap();
+        let path_to_project = add_match.get_one::<String>("path_to_project").unwrap();
+        commands::add::handle_add(&project_name, &path_to_project);
     }
-    if let Some(matches) = matches.subcommand_matches("remove") {
+    if let Some(_) = matches.subcommand_matches("remove") {
         commands::remove::handle_remove();
     }
-    if let Some(matches) = matches.subcommand_matches("default") {
+    if let Some(_) = matches.subcommand_matches("default") {
         commands::default::handle_default();
     }
-    if let Some(matches) = matches.subcommand_matches("import") {
+    if let Some(_) = matches.subcommand_matches("import") {
         commands::import::handle_import();
     }
-
+    if let Some(_) = matches.subcommand_matches("path") {
+        commands::path::handle_path();
+    }
 }
