@@ -41,4 +41,7 @@ impl ProjectState {
         self.save();
         Ok(())
     }
+    pub fn projects(&self) -> &HashMap<String, String> {
+        &self.projects
+    }
 }

@@ -1,7 +1,13 @@
+use crate::project_state::ProjectState;
 use colored::Colorize;
-pub fn handle_ls(){
-    println!("{}:", "Image asset manager projects".green().bold());
-    println!(" - {}", "Robinize".bright_blue().bold());
-    println!(" - {}", "Cargotec".bright_blue().bold());
-    println!(" - {}", "Fitlights".bright_blue().bold());
+pub fn handle_ls() {
+    let state = ProjectState::load();
+    let projects = state.projects();
+    if projects.is_empty() {
+        println!("No projects found");
+        return;
+    }
+    for (project_name, _) in projects {
+        println!(" {} ", project_name.bright_blue().bold());
+    }
 }
