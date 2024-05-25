@@ -17,7 +17,7 @@ fn main() {
         .subcommand(
             Command::new("add")
                 .about("Adds a project and its path to list of projects")
-                .arg(Arg::new("project_name").required(true).index(1))
+                .arg(Arg::new("project_name").required(true).index(1)),
         )
         .subcommand(
             Command::new("remove")
@@ -25,8 +25,7 @@ fn main() {
                 .arg(Arg::new("project_name").required(true).index(1)),
         )
         .subcommand(
-            Command::new("set-default")
-                .about("Sets the default path from where to pull the asset")
+            Command::new("set-default").about("Sets the default path from where to pull the asset"),
         )
         .subcommand(Command::new("path").about("Shows the default path for assets"))
         .subcommand(

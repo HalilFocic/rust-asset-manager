@@ -12,9 +12,13 @@ pub struct ProjectState {
 }
 
 impl ProjectState {
+    fn get_downloads_path() -> String {
+        let home_dir = dirs::home_dir().unwrap();
+        format!("{}/Downloads", home_dir.display())
+    }
     fn new() -> ProjectState {
         ProjectState {
-            default_path: String::from("~/Downloads"),
+            default_path: ProjectState::get_downloads_path(), 
             projects: HashMap::new(),
         }
     }
@@ -30,6 +34,13 @@ impl ProjectState {
             ProjectState::new()
         }
     }
+    pub fn projects(&self) -> &HashMap<String, String> {
+        &self.projects
+    }
+    pub fn path(&self) -> &str {
+        &self.default_path
+    }
+
     pub fn add_project(&mut self, project_name: &str, path: &str) -> Result<(), ProjectError> {
         let project_name = project_name.to_string();
         let path = path.to_string();
@@ -41,7 +52,18 @@ impl ProjectState {
         self.save();
         Ok(())
     }
-    pub fn projects(&self) -> &HashMap<String, String> {
-        &self.projects
+    pub fn remove_project(&mut self, project_name: &str) -> Result<(), ProjectError> {
+        if self.projects.remove(project_name).is_none() {
+            return Err(ProjectError::ProjectNotFound);
+        }
+        self.save();
+        Ok(())
+    }
+    pub fn set_path(&mut self, path: &str) {
+        self.default_path = path.to_string();
+        self.save();
+    }
+    pub fn get_project_path(&self, project_name: &str) -> Option<&String> {
+        self.projects.get(project_name)
     }
 }
