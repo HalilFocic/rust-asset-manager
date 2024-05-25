@@ -18,7 +18,6 @@ fn main() {
             Command::new("add")
                 .about("Adds a project and its path to list of projects")
                 .arg(Arg::new("project_name").required(true).index(1))
-                .arg(Arg::new("path_to_project").required(true).index(2)),
         )
         .subcommand(
             Command::new("remove")
@@ -26,9 +25,8 @@ fn main() {
                 .arg(Arg::new("project_name").required(true).index(1)),
         )
         .subcommand(
-            Command::new("default")
+            Command::new("set-default")
                 .about("Sets the default path from where to pull the asset")
-                .arg(Arg::new("path").required(true).index(1)),
         )
         .subcommand(Command::new("path").about("Shows the default path for assets"))
         .subcommand(
@@ -37,25 +35,30 @@ fn main() {
                 .arg(Arg::new("project_name").required(true).index(1))
                 .arg(Arg::new("file_name").required(true).index(2)),
         )
+        .subcommand(Command::new("default").about("Shows the default path for assets"))
         .get_matches();
 
     if let Some(_) = matches.subcommand_matches("ls") {
         commands::ls::handle_ls();
     }
     if let Some(add_match) = matches.subcommand_matches("add") {
-        // get values of project_name and path using get_one and pass them to function add
         let project_name = add_match.get_one::<String>("project_name").unwrap();
-        let path_to_project = add_match.get_one::<String>("path_to_project").unwrap();
-        commands::add::handle_add(&project_name, &path_to_project);
+        commands::add::handle_add(&project_name);
     }
-    if let Some(_) = matches.subcommand_matches("remove") {
-        commands::remove::handle_remove();
+    if let Some(remove_match) = matches.subcommand_matches("remove") {
+        let project_name = remove_match.get_one::<String>("project_name").unwrap();
+        commands::remove::handle_remove(&project_name);
     }
-    if let Some(_) = matches.subcommand_matches("default") {
+    if let Some(_) = matches.subcommand_matches("set-default") {
         commands::default::handle_default();
     }
-    if let Some(_) = matches.subcommand_matches("import") {
-        commands::import::handle_import();
+    if let Some(_) = matches.subcommand_matches("default") {
+        commands::default::print_default();
+    }
+    if let Some(import_match) = matches.subcommand_matches("import") {
+        let project_name = import_match.get_one::<String>("project_name").unwrap();
+        let file_name = import_match.get_one::<String>("file_name").unwrap();
+        commands::import::handle_import(&project_name, &file_name);
     }
     if let Some(_) = matches.subcommand_matches("path") {
         commands::path::handle_path();

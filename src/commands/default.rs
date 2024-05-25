@@ -1,9 +1,10 @@
 use crate::project_state;
 use colored::Colorize;
-pub fn handle_default(default_path: &str) {
+pub fn handle_default() {
     let mut project_state = project_state::ProjectState::load();
-    project_state.set_path(default_path);
-    println!("Default path is set to: {}", default_path.green());
+    let current_dir = std::env::current_dir().unwrap().display().to_string();
+    project_state.set_path(&current_dir);
+    println!("Default path is set to: {}", current_dir.green());
 }
 pub fn print_default() {
     let project_state = project_state::ProjectState::load();
