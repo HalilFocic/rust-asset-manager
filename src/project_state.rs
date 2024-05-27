@@ -1,6 +1,8 @@
+use dirs::home_dir;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-
+use std::fs;
+use std::path::PathBuf;
 pub enum ProjectError {
     ProjectNotFound,
     ProjectAlreadyExists,
@@ -18,17 +20,27 @@ impl ProjectState {
     }
     fn new() -> ProjectState {
         ProjectState {
-            default_path: ProjectState::get_downloads_path(), 
+            default_path: ProjectState::get_downloads_path(),
             projects: HashMap::new(),
         }
     }
+    pub fn get_storage_path() -> PathBuf {
+        let home_dir = home_dir().expect("Failed to get home directory");
+        let mut config_dir = PathBuf::from(&home_dir);
+        config_dir.push(".assetm");
+        fs::create_dir_all(&config_dir).expect("Failed to create config directory");
+        config_dir.push("projects.json");
+        config_dir
+    }
     fn save(&self) {
         let state = serde_json::to_string(&self).unwrap();
-        std::fs::write("projects.json", state).unwrap();
+        let path = ProjectState::get_storage_path();
+        std::fs::write(path, state).unwrap();
     }
 
     pub fn load() -> ProjectState {
-        if let Ok(state) = std::fs::read_to_string("projects.json") {
+        let path_to_save = ProjectState::get_storage_path();
+        if let Ok(state) = std::fs::read_to_string(path_to_save) {
             serde_json::from_str(&state).unwrap_or_else(|_| ProjectState::new())
         } else {
             ProjectState::new()

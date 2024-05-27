@@ -4,7 +4,6 @@ mod commands {
     pub mod default;
     pub mod import;
     pub mod ls;
-    pub mod path;
     pub mod remove;
 }
 mod project_state;
@@ -27,7 +26,6 @@ fn main() {
         .subcommand(
             Command::new("set-default").about("Sets the default path from where to pull the asset"),
         )
-        .subcommand(Command::new("path").about("Shows the default path for assets"))
         .subcommand(
             Command::new("import")
                 .about("Imports a file to a project")
@@ -58,8 +56,5 @@ fn main() {
         let project_name = import_match.get_one::<String>("project_name").unwrap();
         let file_name = import_match.get_one::<String>("file_name").unwrap();
         commands::import::handle_import(&project_name, &file_name);
-    }
-    if let Some(_) = matches.subcommand_matches("path") {
-        commands::path::handle_path();
     }
 }
