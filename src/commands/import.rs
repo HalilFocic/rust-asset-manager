@@ -9,7 +9,6 @@ pub fn handle_import(project_name: &str, file_name: &str) {
         println!("{}", "Oops, I can't seem to find this file".red());
         return;
     }
-    // Copy the file from path and past it to the project_path folder
     if let Some(project_path) = project_state.get_project_path(project_name) {
         let project_path = Path::new(project_path);
         let project_file = project_path.join(file_name);

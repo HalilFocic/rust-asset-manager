@@ -10,3 +10,18 @@ pub fn handle_add(project_name: &str) {
         Err(_) => println!("{} {}", "Project already exists:".red(), project_name),
     }
 }
+
+#[cfg(test)]
+
+mod tests {
+    use super::*;
+    #[test]
+    fn test_handle_add() {
+        let project_name = "test_project";
+        handle_add(&project_name);
+        std::thread::sleep(std::time::Duration::from_millis(50));
+        let project_state = ProjectState::load();
+        println!("{:?}", project_state.projects());
+        assert_eq!(project_state.projects().contains_key(project_name), true);
+    }
+}
