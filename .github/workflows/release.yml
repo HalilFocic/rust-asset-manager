@@ -31,9 +31,12 @@ jobs:
 
       - name: Create GitHub release
         id: create_release
-        uses: softprops/action-gh-release@v1
+        uses: actions/create-release@v1
         with:
           files: assetm.tar.gz
+          tag_name: ${{ github.run_number}}
+          release_name: Release ${{ github.run_number}}
+
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
