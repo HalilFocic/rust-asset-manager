@@ -28,3 +28,12 @@ jobs:
       - name: Calculate SHA-256 checksum
         id: checksum
         run: echo "::set-output name=sha256::$(sha256sum assetm.tar.gz | cut -d' ' -f1)"
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref_name }}
+        run: |
+          gh release create "$tag" \
+              --repo="$GITHUB_REPOSITORY" \
+              --title="${GITHUB_REPOSITORY#*/} ${tag#v}"
+        
