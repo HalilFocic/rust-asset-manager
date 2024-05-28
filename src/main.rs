@@ -1,5 +1,4 @@
 use clap::{Arg, Command};
-
 mod commands {
     pub mod add;
     pub mod default;
