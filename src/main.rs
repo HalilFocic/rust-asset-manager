@@ -9,7 +9,7 @@ mod commands {
 mod project_state;
 fn main() {
     let matches = Command::new("assetm")
-        .version("1.0")
+        .version("1.0.1")
         .author("Halill Focic <halil.focic@gmail.com>")
         .about("Simple asset manager for projects")
         .subcommand(Command::new("ls").about("Lists all added projects"))
