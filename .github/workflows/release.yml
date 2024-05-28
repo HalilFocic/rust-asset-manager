@@ -30,7 +30,7 @@ jobs:
         run: echo "::set-output name=sha256::$(sha256sum assetm.tar.gz | cut -d' ' -f1)"
       - name: Create release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ALMIGHTY_TOKEN }}
           tag: ${{ github.ref_name }}
         run: |
           gh release create "$tag" \
