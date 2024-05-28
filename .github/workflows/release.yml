@@ -1,0 +1,60 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'  # Triggers on version tags like v1.0.0
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+
+      - name: Build release binary
+        run: cargo build --release
+
+      - name: Create tarball
+        run: tar -czvf assetm.tar.gz -C target/release assetm
+
+      - name: Calculate SHA-256 checksum
+        id: checksum
+        run: echo "::set-output name=sha256::$(sha256sum assetm.tar.gz | cut -d' ' -f1)"
+
+      - name: Create GitHub release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: assetm.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Clone Homebrew Tap
+        run: |
+          git clone https://github.com/HalilFocic/homebrew-assetm.git
+          cd homebrew-assetm
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Update Homebrew Formula
+        run: |
+          cd homebrew-assetm/Formula
+          sed -i "s|url \".*\"|url \"https://github.com/HalilFocic/rust-asset-manager/releases/download/${{ github.ref_name }}/assetm.tar.gz\"|g" assetm.rb
+          sed -i "s|sha256 \".*\"|sha256 \"${{ steps.checksum.outputs.sha256 }}\"|g" assetm.rb
+
+      - name: Commit and Push Changes
+        run: |
+          cd homebrew-assetm
+          git add Formula/assetm.rb
+          git commit -m "Update formula to version ${{ github.ref_name }}"
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
